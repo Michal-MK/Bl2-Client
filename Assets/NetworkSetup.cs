@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
@@ -30,5 +28,11 @@ public class NetworkSetup : MonoBehaviour {
 	public void OnButtonPress() {
 		nms.ConnectTo(currentIpAddress, currentPort);
 		SceneManager.LoadScene(1);
+	}
+
+	private void Update() {
+		if (Input.GetKeyDown(KeyCode.Return)){
+			OnButtonPress();
+		}		
 	}
 }

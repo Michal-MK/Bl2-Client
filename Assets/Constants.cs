@@ -1,4 +1,4 @@
-﻿
+﻿namespace PacketNS {
 	/// <summary>
 	/// Various constants used throughout the application
 	/// </summary>
@@ -25,4 +25,4 @@
 		internal const string PATH = "QuestIndexBL2.txt";
 
 	}
-
+}

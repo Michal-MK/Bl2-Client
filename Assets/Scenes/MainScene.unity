@@ -809,10 +809,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   questAcceptEntryPrefab: {fileID: 1542061525185802, guid: 3d9a6827fe2f84c4eb711e6f166a3c4d,
     type: 3}
-  questTriggerEntryPrefab: {fileID: 1442477302792578, guid: b3101e8f4b810ae4499d4e5fda2de04a,
-    type: 3}
-  toAcceptPanel: {fileID: 911149473}
-  toTriggerPanel: {fileID: 934230033}
+  toAcceptPanel: {fileID: 911149474}
+  toTriggerPanel: {fileID: 934230034}
 --- !u!114 &1683741985
 MonoBehaviour:
   m_ObjectHideFlags: 0
