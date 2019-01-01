@@ -71,7 +71,7 @@ namespace PacketNS {
 		public string givenBy;
 
 		/// <summary>
-		/// Integer signifying since when the quest is availabe, in realtion to <see cref="questID"/>
+		/// Integer signifying since when the quest is available, in relation to <see cref="questID"/>
 		/// </summary>
 		public int availableSince;
 
@@ -84,6 +84,11 @@ namespace PacketNS {
 		/// Is the quest available only while we do not **** up
 		/// </summary>
 		public bool isOptional;
+
+		/// <summary>
+		/// The usual quest level based on the average run
+		/// </summary>
+		public int questLevel;
 
 		/// <summary>
 		/// The current state of this quest

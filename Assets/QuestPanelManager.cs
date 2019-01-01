@@ -1,60 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using PacketNS;
+using System.Linq;
 
 public class QuestPanelManager : MonoBehaviour {
 
 	private List<GameObject> instantiatedThings = new List<GameObject>();
 
 	public GameObject questAcceptEntryPrefab;
-	public GameObject questTriggerEntryPrefab;
 
-	public GameObject toAcceptPanel;
-	public GameObject toTriggerPanel;
+	public Transform toAcceptPanel;
+	public Transform toTriggerPanel;
 
 
 	private void NetworkingManagerScript_OnNewCentralDataReceived() {
+
+		//Epic easy programming
 		foreach (GameObject instance in instantiatedThings) {
 			Destroy(instance);
 		}
 		instantiatedThings.Clear();
 
-		List<Quest> sortingThingie = new List<Quest>(NetworkingManagerScript.instance.centralData);
 
-		sortingThingie.Sort((Quest first, Quest second) => {return first.availableSince - second.availableSince; });
+		List<Quest> acceptedQuests = NetworkingManagerScript.instance.centralData.Where(QuestOne => { return QuestOne.status == QuestStatus.Accepted; }).ToList<Quest>();
+		List<Quest> toAcceptQuests = NetworkingManagerScript.instance.centralData.Where(QuestOne => { return QuestOne.status == QuestStatus.NotAccepted; }).ToList<Quest>();
+
+		toAcceptQuests.Sort((Quest first, Quest second) => { return first.availableSince - second.availableSince; });
+		acceptedQuests.Sort((Quest first, Quest second) => { return first.questLevel - second.questLevel; } );
 
 
-		foreach (Quest quest in sortingThingie) {
-			switch (quest.status) {
-				case QuestStatus.NotAccepted: {
-					InstantiateAndSet(false, quest);
-					break;
-				}
-				case QuestStatus.Hidden: {
-					break;
-				}
-				case QuestStatus.Triggered: {
-					break;
-				}
-				case QuestStatus.Accepted: {
-					InstantiateAndSet(true, quest);
-					break;
-				}
-			}
+		foreach (Quest quest in toAcceptQuests) {
+			InstantiateAndSet(quest);
+		}
+
+		foreach(Quest quest in acceptedQuests) {
+			InstantiateAndSet(quest);
 		}
 	}
 
-	private void InstantiateAndSet(bool isTrigger, Quest quest) {
-		QuestEntry entry;
-		if (isTrigger) {
-			entry = Instantiate(questTriggerEntryPrefab).GetComponent<QuestEntry>();
-			entry.transform.SetParent(toTriggerPanel.transform);
+	private void InstantiateAndSet(Quest quest) {
+		QuestGameObject entry = Instantiate(questAcceptEntryPrefab).GetComponent<QuestGameObject>();
+
+		if (quest.status == QuestStatus.Accepted) {
+			entry.transform.SetParent(toTriggerPanel);
+			entry.triggerButton.SetActive(true);
+			entry.acceptButton.SetActive(false);
+			entry.dismissButton.SetActive(false);
 		}
 		else {
-			entry = Instantiate(questAcceptEntryPrefab).GetComponent<QuestEntry>();
-			entry.transform.SetParent(toAcceptPanel.transform);
+			entry.transform.SetParent(toAcceptPanel);
+			entry.triggerButton.SetActive(false);
+			entry.acceptButton.SetActive(true);
+			entry.dismissButton.SetActive(true);
 		}
+
+		entry.questInfo.text = string.Format("L: {0}, {1}, SM: {2}", quest.questLevel , quest.acceptedBy, quest.availableSince);
 		entry.transform.localScale = Vector3.one;
 		entry.quest = quest;
 		entry.manager = this;
@@ -62,18 +62,9 @@ public class QuestPanelManager : MonoBehaviour {
 		instantiatedThings.Add(entry.gameObject);
 	}
 
-	public void QuestAccepted(int questId) {
-		NetworkingManagerScript.instance.SendPacket(new PacketNS.Packet(questId,PacketNS.QuestStatus.Accepted));
+	public void SendQuestChange(int questID, QuestStatus status) {
+		NetworkingManagerScript.instance.SendPacket(new Packet(questID, status));
 	}
-
-	public void QuestTriggered(int questId) {
-		NetworkingManagerScript.instance.SendPacket(new PacketNS.Packet(questId, PacketNS.QuestStatus.Triggered));
-	}
-
-	public void QuestDismissed(int questId) {
-		NetworkingManagerScript.instance.SendPacket(new PacketNS.Packet(questId, PacketNS.QuestStatus.Hidden));
-	}
-
 
 	private void Update() {
 		if (NetworkingManagerScript.instance.centralDataUpdate) {

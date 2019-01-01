@@ -8,10 +8,6 @@ using PacketNS;
 public class NetworkingManagerScript : MonoBehaviour {
 
 	TCPClient thisClient;
-
-	//public static event EventHandler OnNewCentralDataReceived;
-
-
 	public static NetworkingManagerScript instance;
 
 	public enum QuestStatus {
@@ -44,11 +40,6 @@ public class NetworkingManagerScript : MonoBehaviour {
 		throw new NotImplementedException();
 	}
 
-	//private void GetConnection_OnStringReceived(object sender, PacketReceivedEventArgs<string> e) {
-	//	int k = 2;
-	//	string s = "YO";
-	//}
-
 	private void OnCentralDataReceived(Quest[] arg1, byte arg2) {
 		centralData = arg1;
 		centralDataUpdate = true;
@@ -57,44 +48,25 @@ public class NetworkingManagerScript : MonoBehaviour {
 	}
 
 
-	//private void GetConnection_OnStringReceived(object sender, PacketReceivedEventArgs<string> e) {
-	//	if (e.data[0] == '#') {
-	//		//Valid data
-	//		int questId = int.Parse(e.data.Split(':')[1]);
-
-	//		QuestStatus status = 0;
-	//		switch (e.data.Split(':')[0]) {
-	//			case "N": {
-	//				status = QuestStatus.NotAccepted;
-	//				break;
-	//			}
-	//			case "T": {
-	//				status = QuestStatus.Triggered;
-	//				break;
-	//			}
-	//			case "A": {
-	//				status = QuestStatus.Accepted;
-	//				break;
-	//			}
-	//		}
-
-
-	//	}
-	//}
-
-	private void Disconnect() {
-
-	}
-		
-	private void Connect() {
-
-	}
-
 	public void SendPacket(Packet packet) {
 
-		Connect();
 		thisClient.getConnection.SendData(Constants.PACKET_ID, SimpleTCPHelper.GetBytesFromObject(packet));
-		Disconnect();
 
 	}
+
+	private void OnApplicationPause(bool pause) {
+		if(pause == true) {
+			thisClient.Disconnect();
+		}
+		else {
+			if(thisClient != null) {
+				thisClient.Connect();
+			}
+		}
+	}
+
+	private void OnApplicationQuit() {
+		thisClient.Disconnect();
+	}
+
 }
