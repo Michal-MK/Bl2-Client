@@ -70,6 +70,7 @@ public class QuestPanelManager : MonoBehaviour {
 		if (NetworkingManagerScript.instance.centralDataUpdate) {
 			NetworkingManagerScript.instance.centralDataUpdate = false;
 			NetworkingManagerScript_OnNewCentralDataReceived();
+			PopulateColorInfo.instance.OnDatReceived(NetworkingManagerScript.instance.centralData);
 		}
 	}
 }

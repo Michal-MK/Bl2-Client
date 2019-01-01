@@ -43,8 +43,6 @@ public class NetworkingManagerScript : MonoBehaviour {
 	private void OnCentralDataReceived(Quest[] arg1, byte arg2) {
 		centralData = arg1;
 		centralDataUpdate = true;
-		//OnNewCentralDataReceived(arg2, EventArgs.Empty);
-
 	}
 
 
