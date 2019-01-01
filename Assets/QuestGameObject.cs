@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using PacketNS;
+using UnityEngine.UI;
 
 public class QuestGameObject : MonoBehaviour {
 
@@ -14,6 +15,10 @@ public class QuestGameObject : MonoBehaviour {
 	public GameObject acceptButton;
 	public GameObject dismissButton;
 	public GameObject triggerButton;
+
+	private void Start() {
+		GetComponent<Image>().color = Colors.GetColor(quest.givenBy);
+	}
 
 	public void QuestAcceptedButton() {
 		manager.SendQuestChange(quest.questID, QuestStatus.Accepted);
