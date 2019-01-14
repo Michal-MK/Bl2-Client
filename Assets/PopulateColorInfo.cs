@@ -8,20 +8,26 @@ public class PopulateColorInfo : MonoBehaviour {
 
 	public GameObject prefab;
 
+	bool isFirstLoad = false;
+
 	public static PopulateColorInfo instance;
 
 	private void Awake() {
+		isFirstLoad = false;
 		instance = this;
 	}
 
 	public void OnDatReceived(Quest[] data) {
-		List<Quest> processed = new List<Quest>();
-		foreach (Quest q in data) {
-			if (!ProcessedYet(processed, q)) { 
-				processed.Add(q);
-				GameObject g = Instantiate(prefab, transform.GetChild(1));
-				g.GetComponent<ColorInfo>().SetUp(q.givenBy);
+		if (!isFirstLoad) {
+			List<Quest> processed = new List<Quest>();
+			foreach (Quest q in data) {
+				if (!ProcessedYet(processed, q)) {
+					processed.Add(q);
+					GameObject g = Instantiate(prefab, transform.GetChild(1));
+					g.GetComponent<ColorInfo>().SetUp(q.givenBy);
+				}
 			}
+			isFirstLoad = true;
 		}
 	}
 

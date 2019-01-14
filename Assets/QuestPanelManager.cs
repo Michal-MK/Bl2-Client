@@ -25,8 +25,11 @@ public class QuestPanelManager : MonoBehaviour {
 		List<Quest> acceptedQuests = NetworkingManagerScript.instance.centralData.Where(QuestOne => { return QuestOne.status == QuestStatus.Accepted; }).ToList<Quest>();
 		List<Quest> toAcceptQuests = NetworkingManagerScript.instance.centralData.Where(QuestOne => { return QuestOne.status == QuestStatus.NotAccepted; }).ToList<Quest>();
 
-		toAcceptQuests.Sort((Quest first, Quest second) => { return first.availableSince - second.availableSince; });
 		acceptedQuests.Sort((Quest first, Quest second) => { return first.questLevel - second.questLevel; } );
+
+		toAcceptQuests = (from q in toAcceptQuests
+						  orderby q.availableSince, q.questID
+						  select q).ToList();
 
 
 		foreach (Quest quest in toAcceptQuests) {
