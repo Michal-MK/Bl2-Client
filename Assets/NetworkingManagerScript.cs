@@ -32,8 +32,14 @@ public class NetworkingManagerScript : MonoBehaviour {
 		thisClient.Connect();
 
 		thisClient.getConnection.dataIDs.DefineCustomDataTypeForID<Packet>(Constants.PACKET_ID, UselessCallback);
-
+		thisClient.getConnection.OnInt64Received += GetConnection_OnInt64Received;
 		thisClient.getConnection.dataIDs.DefineCustomDataTypeForID<Quest[]>(Constants.PROPERTY_SYNC, OnCentralDataReceived);
+	}
+
+	private void GetConnection_OnInt64Received(object sender, PacketReceivedEventArgs<long> e) {
+		if(e.data == 1) {
+			PopulateColorInfo.instance.isFirstLoad = true;
+		}
 	}
 
 	private void UselessCallback(Packet arg1, byte arg2) {
