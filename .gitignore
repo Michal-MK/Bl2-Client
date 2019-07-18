@@ -6,4 +6,4 @@ obj
 Assets/TextMesh Pro
 Build
 Assembly-CSharp.csproj
-.gradle
+*.user
